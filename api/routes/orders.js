@@ -25,11 +25,11 @@ router.post('/', (req, res, next) =>{
     const newOrder = {
         id : req.body.id,
         quantity : req.body.quantity
-    }
+    };
     res.status(201).json({
         message : 'New Order Posted',
         newOrder : newOrder
-    })
-})
+    });
+});
 
 module.exports = router;

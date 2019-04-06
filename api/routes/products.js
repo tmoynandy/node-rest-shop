@@ -42,7 +42,7 @@ router.post('/', (req, res, next) =>{
     const newProduct = {
         name : req.body.name,
         price : req.body.price
-    }
+    };
     res.status(201).json({
         message : 'Handling POST request to /products',
         newProduct : newProduct

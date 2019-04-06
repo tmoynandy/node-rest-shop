@@ -8,8 +8,8 @@ const bodyParser = require('body-parser');
 
 
 //products
-const productRoutes = require('./api/routes/products')
-const orderRoutes = require('./api/routes/orders')
+const productRoutes = require('./api/routes/products');
+const orderRoutes = require('./api/routes/orders');
 
 app.use(morgan('dev'));
 
