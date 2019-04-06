@@ -6,6 +6,18 @@ const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
 
+// // to avoid CORS - Cross Origin Resource Sharing - error, we send a suitable header
+// app.use((req, res, next) =>{
+//     res.header('Access-Control-Allow-Origin', '*') //* means allows access to any websites or ports
+//     res.header('Access-Control-Allow-Headers', 
+//     'Origin, X-Requested-with, Content-Type, Accept, Authorization'
+//     );
+//     if(req.method === 'OPTIONS'){ /*browser sends options to server
+//         options as in type of request..we choose the ones we are using & append it to our header*/
+//         res.header('Access-Control-Allow-Method', 'PUT, POST, PATCH, DELETE, GET');
+//         return res.status(200).json({});
+//     }
+// });
 
 //products
 const productRoutes = require('./api/routes/products');
