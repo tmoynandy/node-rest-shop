@@ -1,10 +1,20 @@
 const express = require('express');
 const app = express();
 
+const mongoose = require('mongoose');
+
 //to log requests
 const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
+
+mongoose.connect('mongodb://127.0.0.1:27017', {useNewUrlParser: false});
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('hahahah connected')
+});
 
 // to avoid CORS - Cross Origin Resource Sharing - error, we send a suitable header
 app.use((req, res, next) =>{
