@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const Product = require('../models/product');
 
 router.get('/', (req, res, next) =>{
+    //for normal static check
     res.status(200).json({
         message : 'Handling GET request to /products'
     });
@@ -12,17 +13,30 @@ router.get('/', (req, res, next) =>{
 
 router.get('/:productId', (req, res, next) =>{
     const id = req.params.productId;
-    if (id === 'special'){
-        res.status(200).json({
-            message : 'special ID',
-            id : id
+    // //for static data viewing for test
+    // if (id === 'special'){
+    //     res.status(200).json({
+    //         message : 'special ID',
+    //         id : id
+    //     });
+    // }
+    // else {
+    //     res.status(200).json({
+    //         message : 'not special'
+    //     });
+    // }
+    Product.findById(id)
+    .exec()
+    .then(doc =>{
+        console.log(doc);
+        res.status(200).json(doc);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error : err
         });
-    }
-    else {
-        res.status(200).json({
-            message : 'not special'
-        });
-    }
+    });
 });
 
 router.patch('/:productId', (req, res, next) =>{
@@ -52,7 +66,6 @@ router.post('/', (req, res, next) =>{
     });
     product.save().then(result =>{
         console.log(result);
-
     })
     .catch(err => console.log(err));
     res.status(201).json({
