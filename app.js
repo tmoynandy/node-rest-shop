@@ -8,7 +8,7 @@ const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
 
-mongoose.connect('mongodb://127.0.0.1:27017', {useNewUrlParser: false});
+mongoose.connect('mongodb://127.0.0.1:27017');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
