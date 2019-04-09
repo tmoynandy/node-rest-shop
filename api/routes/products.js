@@ -133,7 +133,18 @@ router.delete('/:productId', (req, res, next) =>{
     .exec()
     .then( result => {
         console.log(result);
-        res.status(200).json(result);
+        res.status(200).json({
+            message : "Product Deleted",
+            request : {
+                type : 'POST',
+                description : 'ADD_NEW PRODUCT',
+                url : 'http://localhost:3000/products',
+                body : {
+                    name : 'String',
+                    price : 'Number'
+                }
+            }
+        });
     })
     .catch( err => {
         console.log(result);
