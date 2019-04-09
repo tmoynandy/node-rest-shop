@@ -6,8 +6,21 @@ const mongoose = require('mongoose');
 const Order = require('../models/order');
 
 router.get('/', (req, res, next) =>{
-    res.status(200).json({
-        message : 'Details of all orders'
+    // res.status(200).json({
+    //     message : 'Details of all orders'
+    // });
+    Order.find()
+    .select('quantity _id product')
+    .exec()
+    .then( result =>{
+        console.log(result);
+        res.status(200).json(result);
+    })
+    .catch( err => {
+        console.log(err);
+        res.status(500).json({
+            error : err
+        });
     });
 });
 
