@@ -137,7 +137,16 @@ router.post('/', (req, res, next) =>{
         console.log(result);
         res.status(201).json({
             message : 'product added',
-            createdProduct : result
+            createdProduct : {
+                name : result.name,
+                price : result.price,
+                _id : result._id,
+                request : {
+                    type : 'GET',
+                    description : 'TO_FETCH_THIS_PRODUCT',
+                    url : 'http://localhost:3000/products/'+result._id
+                }
+            }
         })
     })
     .catch(err => {
