@@ -46,9 +46,24 @@ router.get('/:orderId', (req, res, next) =>{
 });
 
 router.delete('/:orderId', (req, res, next) =>{
-    res.status(200).json({
-        message : 'Order Deleted',
-        id : req.params.orderId
+    const id = req.params.orderId;
+    // res.status(200).json({
+    //     message : 'Order Deleted',
+    //     id : req.params.orderId
+    // });
+    Order.remove({
+        _id : id
+    })
+    .exec()
+    .then( result => {
+        console.log(result);
+        res.status(200).json(result);
+    })
+    .catch( err => {
+        console.log(err);
+        res.status(500).json({
+            error : err
+        });
     });
 });
 
