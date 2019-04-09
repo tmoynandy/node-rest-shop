@@ -11,6 +11,7 @@ router.get('/', (req, res, next) =>{
     // });
     Order.find()
     .select('quantity _id product')
+    .populate('product','name price _id')
     .exec()
     .then( results =>{
         console.log(results);
@@ -21,7 +22,7 @@ router.get('/', (req, res, next) =>{
                 return{
                     quantity : result.quantity,
                     orderId : result._id,
-                    productId : result.product,
+                    productDetails : result.product,
                     request : {
                         type : 'GET',
                         description : 'FETCH-INDIVIDUAL-ORDER',
@@ -44,10 +45,20 @@ router.get('/:orderId', (req, res, next) =>{
     const id = req.params.orderId;
     Order.findById(id)
     .select('quantity _id product')
+    .populate('product','name price _id')
     .exec()
     .then( result =>{
         console.log(result);
-        res.status(200).json(result);
+        res.status(200).json({
+            OrderId : result._id,
+            quantity : result.quantity,
+            ProductDetails : result.product,
+            request : {
+                type : 'GET',
+                description : 'VIEW_ALL_PRODUCTS',
+                url : 'https://localhost:3000/orders'
+            }
+        });
     })
     .catch( err => {
         console.log(err);
@@ -78,7 +89,7 @@ router.delete('/:orderId', (req, res, next) =>{
             request : {
                 type : 'POST',
                 description : 'ADD_NEW_PRODUCT',
-                url : 'https://localhost:3000/orders',
+                url : 'http://localhost:3000/orders',
                 body : {
                     quantity : 'Number',
                     productId : 'Id_of_product'
