@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+const mongoose = require('mongoose');
+
+const Order = require('../models/order');
+
 router.get('/', (req, res, next) =>{
     res.status(200).json({
         message : 'Details of all orders'
@@ -22,14 +26,25 @@ router.delete('/:orderId', (req, res, next) =>{
 });
 
 router.post('/', (req, res, next) =>{
-    const newOrder = {
-        id : req.body.id,
-        quantity : req.body.quantity
-    };
-    res.status(201).json({
-        message : 'New Order Posted',
-        newOrder : newOrder
+    const order = new Order({
+        quantity : req.body.quantity,
+        product : req.body.productId
     });
+    order.save()
+    .then( result => {
+        console.log(result);
+        res.status(201).json(result);
+    })
+    .catch( err => {
+        console.log(err);
+        res.status(500).json({
+            error : err
+        });
+    });
+    // res.status(201).json({
+    //     message : 'New Order Posted',
+    //     newOrder : newOrder
+    // });
 });
 
 module.exports = router;
