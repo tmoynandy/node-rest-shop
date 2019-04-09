@@ -11,11 +11,11 @@ router.get('/', (req, res, next) =>{
     // });
     Order.find()
     .select('quantity _id product')
-    .populate('product','name price _id')
+    .populate('product','name price _id productImage')
     .exec()
     .then( results =>{
         console.log(results);
-        // res.status(200).json(result);
+        // res.status(200).json(result); some change
         const response = {
             count : results.length,
             orders : results.map(result =>{
@@ -45,7 +45,7 @@ router.get('/:orderId', (req, res, next) =>{
     const id = req.params.orderId;
     Order.findById(id)
     .select('quantity _id product')
-    .populate('product','name price _id')
+    .populate('product','name price _id productImage')
     .exec()
     .then( result =>{
         console.log(result);

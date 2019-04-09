@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     }
 });
 const fileFilter = (req, file, cb) =>{
-    if( file.mimeType === 'image/jpeg' || file.mimeType === 'image/png') {
+    if( file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
         cb(null, true);
     }
     else{
@@ -36,9 +36,9 @@ router.get('/', (req, res, next) =>{
     // res.status(200).json({
     //     message : 'Handling GET request to /products'
     // });
-    //test change
+    
     Product.find()
-    .select('name price _id' )
+    .select('productImage' )
     .exec()
     .then(docs =>{
         console.log(docs);
@@ -49,6 +49,7 @@ router.get('/', (req, res, next) =>{
                     name : doc.name,
                     price : doc.price,
                     _id :doc._id,
+                    productImage : doc.productImage,
                     request : {
                         type : 'GET',
                         description : 'REQUEST_TO_FETCH_THIS_PRODUCT',
@@ -83,7 +84,7 @@ router.get('/:productId', (req, res, next) =>{
     //     });
     // }
     Product.findById(id)
-    .select('name price _id')
+    .select('name price _id productImage')
     .exec()
     .then(doc =>{
         console.log(doc);
@@ -92,6 +93,7 @@ router.get('/:productId', (req, res, next) =>{
                 name : doc.name,
                 price : doc.price,
                 _id : doc._id,
+                productImage : doc.productImage,
                 request : {
                     type : 'GET',
                     description : 'VIEW_ALL_PRODUCTS',
@@ -186,7 +188,8 @@ router.post('/', upload.single('productImage'), (req, res, next) =>{
     console.log(req.file);
     const product = new Product({
         name: req.body.name,
-        price: req.body.price
+        price: req.body.price,
+        productImage : req.file.path
     });
     product.save()
     .then(result =>{
@@ -197,6 +200,7 @@ router.post('/', upload.single('productImage'), (req, res, next) =>{
                 name : result.name,
                 price : result.price,
                 _id : result._id,
+                //productImage : result.productImage,
                 request : {
                     type : 'GET',
                     description : 'TO_FETCH_THIS_PRODUCT',
@@ -214,3 +218,4 @@ router.post('/', upload.single('productImage'), (req, res, next) =>{
 });
 
 module.exports = router;
+//aa
