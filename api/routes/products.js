@@ -56,11 +56,22 @@ router.get('/:productId', (req, res, next) =>{
     //     });
     // }
     Product.findById(id)
+    .select('name price _id')
     .exec()
     .then(doc =>{
         console.log(doc);
         if (doc){
-            res.status(200).json(doc);
+            const result = {
+                name : doc.name,
+                price : doc.price,
+                _id : doc._id,
+                request : {
+                    type : 'GET',
+                    description : 'VIEW_ALL_PRODUCTS',
+                    url : 'http://localhost:3000/products'
+                }
+            }
+            res.status(200).json(result);
         }
         else{
             res.status(404).json({
