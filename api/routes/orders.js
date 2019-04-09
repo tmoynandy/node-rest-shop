@@ -12,9 +12,25 @@ router.get('/', (req, res, next) =>{
     Order.find()
     .select('quantity _id product')
     .exec()
-    .then( result =>{
-        console.log(result);
-        res.status(200).json(result);
+    .then( results =>{
+        console.log(results);
+        // res.status(200).json(result);
+        const response = {
+            count : results.length,
+            orders : results.map(result =>{
+                return{
+                    quantity : result.quantity,
+                    orderId : result._id,
+                    productId : result.product,
+                    request : {
+                        type : 'GET',
+                        description : 'FETCH-INDIVIDUAL-ORDER',
+                        url : 'http://localhost:3000/orders/'+result._id
+                    }
+                }
+            })
+        };
+        res.status(200).json(response);
     })
     .catch( err => {
         console.log(err);
@@ -57,7 +73,18 @@ router.delete('/:orderId', (req, res, next) =>{
     .exec()
     .then( result => {
         console.log(result);
-        res.status(200).json(result);
+        res.status(200).json({
+            message : 'order removed',
+            request : {
+                type : 'POST',
+                description : 'ADD_NEW_PRODUCT',
+                url : 'https://localhost:3000/orders',
+                body : {
+                    quantity : 'Number',
+                    productId : 'Id_of_product'
+                }
+            }
+        });
     })
     .catch( err => {
         console.log(err);
@@ -75,7 +102,20 @@ router.post('/', (req, res, next) =>{
     order.save()
     .then( result => {
         console.log(result);
-        res.status(201).json(result);
+        res.status(201).json({
+            message : 'order added',
+            createdOrder : {
+                id : result._id,
+                productId :result.product,
+                quantity : result.quantity
+            },
+            request : {
+                type : 'GET',
+                description : 'FETCH_THIS_ORDER',
+                url : 'http://localhost:3000/orders/'+result._id
+            }
+            
+        });
     })
     .catch( err => {
         console.log(err);
