@@ -104,7 +104,14 @@ router.patch('/:productId', (req, res, next) =>{
     .exec()
     .then(result => {
         console.log(result);
-        res.status(200).json(result);
+        res.status(200).json({
+            message : 'Product has been updated',
+            request : {
+                type : 'GET',
+                description : 'fetch-UPDATED-PRODUCT',
+                url : 'http://localhost:3000/products/'+id
+            }
+        });
     })
     .catch(err => {
         console.log(err);
