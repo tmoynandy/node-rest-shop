@@ -1,5 +1,6 @@
 {
     "env" : {
-        "MONGO_ATLAS_PW" : "12345"
+        "MONGO_ATLAS_PW" : "12345",
+        "JWT_KEY" : "Tanugod"
     }
 }
