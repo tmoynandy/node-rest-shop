@@ -36,7 +36,7 @@ router.post('/signup', (req, res, next) => {
                         });
                     })
                     .catch( err =>{
-                        rs.status(500).json({
+                        res.status(500).json({
                             error : err
                         });
                     });
@@ -44,7 +44,11 @@ router.post('/signup', (req, res, next) => {
             });
         }
     })
-    .catch();
+    .catch(err =>{
+        res.status(500).json({
+            error : err
+        })
+    });
 
     
 });
