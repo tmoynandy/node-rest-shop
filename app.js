@@ -35,6 +35,7 @@ app.use((req, res, next) =>{
 //products
 const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
+const userRoutes = require('./api/routes/users');
 
 app.use(morgan('dev'));
 
@@ -44,6 +45,7 @@ app.use(bodyParser.json());
 
 app.use('/products', productRoutes);
 app.use('/orders',orderRoutes);
+app.use('/user',userRoutes);
 
 //if we make past the above two requests/middlewares, it's an error
 app.use((req, res, next) =>{
