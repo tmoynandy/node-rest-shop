@@ -34,9 +34,9 @@ const upload = multer({
 
 const Product = require('../models/product');
 
+router.get('/:productId', ProductsController.products_get_one);
 router.get('/', ProductsController.products_get_all);
 
-router.get('/:productId', ProductsController.products_get_one);
 
 //updating entry
 //pass array of json to update
