@@ -36,6 +36,7 @@ app.use((req, res, next) => {
 const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
 const userRoutes = require('./api/routes/users');
+const Boom = require('@hapi/boom');
 
 app.use(morgan('dev'));
 
@@ -49,9 +50,7 @@ app.use('/user', userRoutes);
 
 //if we make past the above two requests/middlewares, it's an error
 app.use((req, res, next) => {
-    const error = new Error('Not Found');
-    error.status = 404;
-    next(error);
+    next(Boom.notFound().output);
 });
 //catches the error directed by next to this middleware
 app.use((error, req, res, next) => {

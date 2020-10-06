@@ -1,193 +1,77 @@
-const express = require('express');
-const router = express.Router();
-const mongoose = require('mongoose');
-const multer = require('multer');
-const Product = require('../models/product')
+const { CreateProduct, SearchProductByName, GetAllProducts, SearchProductById, UpdateProduct, DeleteProduct } = require("../services/products")
 
-exports.search_product_by_name = async (name) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const docs = await Product.find({ name: new RegExp(name) })
-            const response = {
-                count: docs.length,
-                products: docs.map(doc => {
-                    return {
-                        name: doc.name,
-                        price: doc.price,
-                        _id: doc._id,
-                        productImage: doc.productImage,
-                        request: {
-                            type: 'GET',
-                            description: 'REQUEST_TO_FETCH_THIS_PRODUCT',
-                            url: 'http://localhost:3000/products/' + doc._id
-                        }
-                    }
-                })
-            }
-            resolve(response)
-        } catch (err) {
-            reject(err)
-        }
-    })
-}
+
 exports.products_get_all = async (req, res, next) => {
     const { name } = req.query;
-    if (name) {
-        try {
-            const response = await this.search_product_by_name(name)
-            res.status(200).json(response);
-        } catch (err) {
-            res.status(500).json({
-                error: err
-            });
+    try {
+        let response;
+        if (name) {
+            response = await SearchProductByName(name)
+        } else {
+            response = await GetAllProducts();
         }
-        return;
+        res.json(response)
     }
-    Product.find()
-        .select('productImage')
-        .exec()
-        .then(docs => {
-            const response = {
-                count: docs.length,
-                products: docs.map(doc => {
-                    return {
-                        name: doc.name,
-                        price: doc.price,
-                        _id: doc._id,
-                        productImage: doc.productImage,
-                        request: {
-                            type: 'GET',
-                            description: 'REQUEST_TO_FETCH_THIS_PRODUCT',
-                            url: 'http://localhost:3000/products/' + doc._id
-                        }
-                    }
-                })
-            }
-            res.status(200).json(response);
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: err
-            });
-        });
+    catch (err) {
+        next(err)
+    }
 
 }
 
-exports.products_get_one = (req, res, next) => {
-    const id = req.params.productId;
-    Product.findById(id)
-        .select('name price _id productImage')
-        .exec()
-        .then(doc => {
-            if (doc) {
-                const result = {
-                    name: doc.name,
-                    price: doc.price,
-                    _id: doc._id,
-                    productImage: doc.productImage,
-                    request: {
-                        type: 'GET',
-                        description: 'VIEW_ALL_PRODUCTS',
-                        url: 'http://localhost:3000/products'
-                    }
-                }
-                res.status(200).json(result);
-            }
-            else {
-                res.status(404).json({
-                    message: 'No valid entry found'
-                })
-            }
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: err
-            });
-        });
+exports.products_get_one = async (req, res, next) => {
+    const { productId } = req.params;
+
+    try {
+        const response = await SearchProductById(productId)
+        res.json(response)
+    } catch (err) {
+        next(err)
+    }
+
 }
 
 
-exports.products_patch = (req, res, next) => {
-    const id = req.params.productId;
+exports.products_patch = async (req, res, next) => {
+    const { productId } = req.params;
     const updateOps = {};
     for (const ops of req.body) {
         updateOps[ops.propName] = ops.value
     }
-    Product.update({ _id: id }, { $set: updateOps })
-        .exec()
-        .then(result => {
-            res.status(200).json({
-                message: 'Product has been updated',
-                request: {
-                    type: 'GET',
-                    description: 'fetch-UPDATED-PRODUCT',
-                    url: 'http://localhost:3000/products/' + id
-                }
-            });
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: err
-            });
-        });
+    try {
+        const response = await UpdateProduct(productId, updateOps)
+        res.json(response)
+    } catch (err) {
+        next(err)
+    }
 }
 
 
-exports.products_delete = (req, res, next) => {
-    const id = req.params.productId;
-    Product.remove({
-        _id: id
-    })
-        .exec()
-        .then(result => {
-            res.status(200).json({
-                message: "Product Deleted",
-                request: {
-                    type: 'POST',
-                    description: 'ADD_NEW PRODUCT',
-                    url: 'http://localhost:3000/products',
-                    body: {
-                        name: 'String',
-                        price: 'Number'
-                    }
-                }
-            });
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: err
-            });
-        });
+exports.products_delete = async (req, res, next) => {
+    const { productId } = req.params;
+    try {
+        let response = await DeleteProduct(productId)
+        res.json(response)
+    } catch (err) {
+        next(err)
+    }
+
 
 }
 
 
-exports.products_create_product = (req, res, next) => {
-    const product = new Product({
+exports.products_create_product = async (req, res, next) => {
+    const payload = {
         name: req.body.name,
         price: req.body.price,
         productImage: req.file.path
-    });
-    product.save()
-        .then(result => {
-            res.status(201).json({
-                message: 'product added',
-                createdProduct: {
-                    name: result.name,
-                    price: result.price,
-                    _id: result._id,
-                    //productImage : result.productImage,
-                    request: {
-                        type: 'GET',
-                        description: 'TO_FETCH_THIS_PRODUCT',
-                        url: 'http://localhost:3000/products/' + result._id
-                    }
-                }
-            })
+    }
+    try {
+        let result = await CreateProduct(payload)
+        res.json({
+            ...result
         })
-        .catch(err => {
-            res.status(500).json({
-                error: err
-            })
-        });
+    } catch (e) {
+        next(e)
+    }
+
 }
