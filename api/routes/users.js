@@ -7,12 +7,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const UsersController = require('../controllers/users');
+const checkAuth = require('../middleware/check-auth');
 
 const secret = 'secret'
 
 router.post('/signup', UsersController.users_signup);
 
-router.delete('/:userId', UsersController.user_delete);
+router.delete('/:userId', checkAuth, UsersController.user_delete);
 
 router.post('/login', UsersController.user_login);
 
