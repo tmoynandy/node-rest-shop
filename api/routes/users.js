@@ -8,7 +8,8 @@ const User = require('../models/user');
 
 const UsersController = require('../controllers/users');
 
-const secret = 'secret'
+if (process.env.SECRET_TOKEN) secret = process.env.SECRET_TOKEN;
+else secret = "secret";
 
 router.post('/signup', UsersController.users_signup);
 
